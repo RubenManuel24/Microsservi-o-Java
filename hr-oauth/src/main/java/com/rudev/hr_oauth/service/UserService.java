@@ -26,12 +26,14 @@ public class UserService implements UserDetailsService{
 			throw new IllegalArgumentException("Email not found");
 		}
 		logger.info("Email found: "+ email);
+		
 		return user;
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userFeignClient.findByEmail(username).getBody();
+		logger.info("User retornado do Feign: " + user.getRoles());
 		if(user == null) {
 			logger.error("Email not found");
 			throw new UsernameNotFoundException("Email not found");

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,7 +18,7 @@ public class User implements UserDetails   {
 	private String email;
 	private String password;
 	
-	private Set<Role> role = new HashSet<>();
+	private Set<Role> roles = new HashSet<>();
 	
 	public User() {}
 
@@ -59,6 +60,10 @@ public class User implements UserDetails   {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public Set<Role> getRoles() {
+		return roles;
+	}
 
 	@Override
 	public int hashCode() {
@@ -79,7 +84,8 @@ public class User implements UserDetails   {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return role.stream().map(x -> new SimpleGrantedAuthority(x.getRoleName())).toList();
+		return roles.stream().map(x -> new SimpleGrantedAuthority(
+				x.getRoleName())).collect(Collectors.toList());
 	}
 
 	@Override
