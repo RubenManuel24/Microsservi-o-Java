@@ -3,6 +3,7 @@ package com.rudev.hr_oauth.confg;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -20,6 +21,12 @@ import com.rudev.hr_oauth.service.UserService;
 @Component
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter{
+	
+	@Value("${oauth.client.name}")
+	private String clientName;
+	
+	@Value("${oauth.client.secret}")
+	private String clientSecret;
 	
 	@Autowired
 	private BCryptPasswordEncoder bcryptPasswordEncoder;
@@ -49,8 +56,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory()
-		.withClient("myappname123")
-		.secret(bcryptPasswordEncoder.encode("myappsecret123"))
+		.withClient(clientName)
+		.secret(bcryptPasswordEncoder.encode(clientSecret))
 		.scopes("read", "write")
 		.authorizedGrantTypes("password")
 		.accessTokenValiditySeconds(86400);
